@@ -2,3 +2,4 @@
 
 # Keep secrets safe
 .env
+counting.db
