@@ -1,1 +1,4 @@
 /target
+
+# Keep secrets safe
+.env
