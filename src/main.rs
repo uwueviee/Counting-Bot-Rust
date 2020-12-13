@@ -22,6 +22,10 @@ struct Handler;
 #[async_trait]
 impl EventHandler for Handler {
     async fn message(&self, ctx: Context, msg: Message) {
+        if msg.author.bot {
+            return;
+        }
+
         use crate::schema::servers::dsl::*;
 
         let data = &ctx.data.write().await;
@@ -49,6 +53,10 @@ impl EventHandler for Handler {
                     e
                 })
             }).await {
+                println!("Error sending message: {:?}", why);
+            }
+        } else if msg_arguments[0] == "<:7_:770356395261952020>"{
+            if let Err(why) = msg.channel_id.say(&ctx.http, "<:7_:770356395261952020>").await {
                 println!("Error sending message: {:?}", why);
             }
         } else if msg_arguments[0] == "~stats"{
@@ -97,6 +105,9 @@ impl EventHandler for Handler {
 
             if guild_info.last_failed_user != "" {
                 fields.push(("Last Failure", format!("<@{}>", guild_info.last_failed_user), true))
+            }
+            if guild_info.last_submission_user != "" {
+                fields.push(("Last Success", format!("<@{}>", guild_info.last_submission_user), true))
             }
             fields.push(("Current Gamemode", guild_info.gamemode.to_string(), false));
 
