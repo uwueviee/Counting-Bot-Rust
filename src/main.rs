@@ -38,7 +38,7 @@ impl EventHandler for Handler {
                     e.title("Counting Help");
                     e.description("Count to skies! Just don't mess up the chain....\nNeed support? Join Counting's home server [here](https://discord.gg/Jp4yMWZ7jk)!");
                     e.color(12522619);
-                    e.thumbnail("https://cdn.discordapp.com/avatars/787724753586487297/251bc215d4a682b93d80a803106caaee.png?size=512");
+                    e.thumbnail("https://cdn.discordapp.com/avatars/786911411792117770/c74bd0d6860e287e2aade5753eeeeafd.png?size=512");
                     e.fields(vec![
                         ("~help", "Shows this help message!", true),
                         ("~stats [server_id]", "Shows the server's statistics!", true),
@@ -105,7 +105,7 @@ impl EventHandler for Handler {
                     e.title("Server Stats");
                     e.description(format!("Statistics for {}", guild_info.guild_id));
                     e.color(12522619);
-                    e.thumbnail("https://cdn.discordapp.com/avatars/787724753586487297/251bc215d4a682b93d80a803106caaee.png?size=512");
+                    e.thumbnail("https://cdn.discordapp.com/avatars/786911411792117770/c74bd0d6860e287e2aade5753eeeeafd.png?size=512");
                     e.fields(fields);
                     e
                 })
@@ -155,7 +155,7 @@ impl EventHandler for Handler {
                     e.title("Global Stats");
                     e.description("Global Statistics for Counting");
                     e.color(12522619);
-                    e.thumbnail("https://cdn.discordapp.com/avatars/787724753586487297/251bc215d4a682b93d80a803106caaee.png?size=512");
+                    e.thumbnail("https://cdn.discordapp.com/avatars/786911411792117770/c74bd0d6860e287e2aade5753eeeeafd.png?size=512");
                     e.fields(vec![
                         ("Highest Count", global_stats.highest_count.to_string(), true),
                         ("Total Highest Count", global_stats.total_highest_count.to_string(), true),
