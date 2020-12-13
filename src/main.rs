@@ -265,9 +265,8 @@ impl EventHandler for Handler {
                     guild_info.last_failed_user = msg.author.id.0.to_string();
                     guild_info.current_count = 0;
                     guild_info.last_submission_user = "".to_string();
-
-                    submission_passed = false;
                 }
+                submission_passed = false;
             } else {
                 guild_info.current_count = submission.clone();
             }
