@@ -3,3 +3,6 @@
 # Keep secrets safe
 .env
 counting.db
+counting_dev.db
+/.idea/dataSources/*
+/.idea/dataSources*
