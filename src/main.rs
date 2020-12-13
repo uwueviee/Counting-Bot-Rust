@@ -11,7 +11,7 @@ use diesel::prelude::*;
 use diesel::pg::PgConnection;
 use diesel::r2d2::{ConnectionManager, Pool};
 use tokio_diesel::*;
-use crate::structs::servers::Servers;
+use crate::structs::servers::{Servers, GlobalStats};
 
 pub mod structs;
 pub mod schema;
@@ -31,7 +31,142 @@ impl EventHandler for Handler {
         let org_channel_id: String = msg.channel_id.0.to_string();
         let org_guild_id: String = msg.guild_id.unwrap().0.to_string();
 
-        if msg_arguments[0] == "~set_channel" {
+        if msg_arguments[0] == "~help"{
+            if let Err(why) = msg.channel_id.send_message(&ctx.http, |c| {
+                c.embed(|e| {
+                    e.title("Counting Help");
+                    e.description("Count to skies! Just don't mess up the chain....\nNeed support? Join Counting's home server [here](https://discord.gg/Jp4yMWZ7jk)!");
+                    e.color(12522619);
+                    e.thumbnail("https://cdn.discordapp.com/avatars/787724753586487297/251bc215d4a682b93d80a803106caaee.png?size=512");
+                    e.fields(vec![
+                        ("~help", "Shows this help message!", true),
+                        ("~stats [server_id]", "Shows the server's statistics!", true),
+                        ("~global_stats", "Shows the global statistics!", true),
+                        ("~set_channel [channel_id]", "Sets the dedicated counting channel (Admins Only)", false),
+                        ("~set_gamemode <gamemode_id>", "Sets the gamemode (Admins only)\n\n0 = No punishments\n1 = Resets progress if wrong number\n2 = Resets progress if wrong number or same user\n", false)
+                    ]);
+                    e
+                })
+            }).await {
+                println!("Error sending message: {:?}", why);
+            }
+        } else if msg_arguments[0] == "~stats"{
+            let mut server_lookup = org_guild_id.clone();
+            if msg_arguments.len() > 1 {
+                server_lookup = msg_arguments[1].to_string();
+            }
+            let results = servers.filter(guild_id.eq(server_lookup.clone()))
+                .load_async::<Servers>(db)
+                .await
+                .expect("Server not registered");
+
+            let mut guild_info = Servers{
+                guild_id: "".to_string(),
+                channel_id: "".to_string(),
+                current_count: 0,
+                last_submission_user: "".to_string(),
+                highest_count: 0,
+                times_failed: 0,
+                last_failed_user: "".to_string(),
+                gamemode: 0
+            };
+
+            for result in results {
+                guild_info = Servers{
+                    guild_id: result.guild_id,
+                    channel_id: result.channel_id,
+                    current_count: result.current_count,
+                    last_submission_user: result.last_submission_user,
+                    highest_count: result.highest_count,
+                    times_failed: result.times_failed,
+                    last_failed_user: result.last_failed_user,
+                    gamemode: result.gamemode
+                }
+            }
+
+            if guild_info.guild_id == "" {
+                return;
+            }
+
+            let mut fields = vec![
+                ("Current Count", guild_info.current_count.to_string(), true),
+                ("Highest Count", guild_info.highest_count.to_string(), true),
+                ("Times Failed", guild_info.times_failed.to_string(), true)
+            ];
+
+            if guild_info.last_failed_user != "" {
+                fields.push(("Last Failure", format!("<@{}>", guild_info.last_failed_user), true))
+            }
+            fields.push(("Current Gamemode", guild_info.gamemode.to_string(), false));
+
+            if let Err(why) = msg.channel_id.send_message(&ctx.http, |c| {
+                c.embed(|e| {
+                    e.title("Server Stats");
+                    e.description(format!("Statistics for {}", guild_info.guild_id));
+                    e.color(12522619);
+                    e.thumbnail("https://cdn.discordapp.com/avatars/787724753586487297/251bc215d4a682b93d80a803106caaee.png?size=512");
+                    e.fields(fields);
+                    e
+                })
+            }).await {
+                println!("Error sending message: {:?}", why);
+            }
+        } else if msg_arguments[0] == "~global_stats"{
+            let total_highest_count_result = diesel::sql_query("SELECT SUM(highest_count) FROM servers;")
+                .load_async::<crate::structs::servers::SumStats>(db)
+                .await
+                .expect("Error getting info from the database");
+            let total_current_count_result = diesel::sql_query("SELECT SUM(current_count) FROM servers;")
+                .load_async::<crate::structs::servers::SumStats>(db)
+                .await
+                .expect("Error getting info from the database");
+            let total_times_failed_result = diesel::sql_query("SELECT SUM(times_failed) FROM servers;")
+                .load_async::<crate::structs::servers::SumStats>(db)
+                .await
+                .expect("Error getting info from the database");
+            let highest_count_result = diesel::sql_query("SELECT MAX(highest_count) FROM servers;")
+                .load_async::<crate::structs::servers::MaxStats>(db)
+                .await
+                .expect("Error getting info from the database");
+
+            let mut global_stats = GlobalStats{
+                total_highest_count: 0,
+                total_current_count: 0,
+                total_times_failed: 0,
+                highest_count: 0
+            };
+
+            for result in total_highest_count_result {
+                global_stats.total_highest_count = result.sum;
+            }
+            for result in total_current_count_result {
+                global_stats.total_current_count = result.sum;
+            }
+            for result in total_times_failed_result {
+                global_stats.total_times_failed = result.sum;
+            }
+            for result in highest_count_result {
+                global_stats.highest_count = result.max;
+            }
+
+            if let Err(why) = msg.channel_id.send_message(&ctx.http, |c| {
+                c.embed(|e| {
+                    e.title("Global Stats");
+                    e.description("Global Statistics for Counting");
+                    e.color(12522619);
+                    e.thumbnail("https://cdn.discordapp.com/avatars/787724753586487297/251bc215d4a682b93d80a803106caaee.png?size=512");
+                    e.fields(vec![
+                        ("Highest Count", global_stats.highest_count.to_string(), true),
+                        ("Total Highest Count", global_stats.total_highest_count.to_string(), true),
+                        ("Total Current Count", global_stats.total_current_count.to_string(), false),
+                        ("Total Times Failed", global_stats.total_times_failed.to_string(), true)
+                        ]);
+                    e
+                })
+            }).await {
+                println!("Error sending message: {:?}", why);
+            }
+        } else if msg_arguments[0] == "~set_channel" {
             diesel::insert_into(crate::schema::servers::table)
                 .values((
                     channel_id.eq(org_channel_id),
