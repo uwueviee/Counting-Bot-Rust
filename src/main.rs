@@ -8,7 +8,7 @@ use serenity::{
 
 #[macro_use] extern crate diesel;
 use diesel::prelude::*;
-use diesel::sqlite::SqliteConnection;
+use diesel::pg::PgConnection;
 use diesel::r2d2::{ConnectionManager, Pool};
 use tokio_diesel::*;
 use crate::structs::servers::Servers;
@@ -169,7 +169,7 @@ async fn ready(&self, _: Context, ready: Ready) {
 struct DbConn;
 
 impl TypeMapKey for DbConn {
-type Value = Pool<ConnectionManager<SqliteConnection>>;
+type Value = Pool<ConnectionManager<PgConnection>>;
 }
 
 #[tokio::main]
@@ -188,7 +188,7 @@ let mut client = Client::builder(&token)
     .expect("Err creating client");
     {
         let mut data = client.data.write().await;
-        data.insert::<DbConn>(Pool::builder().build(ConnectionManager::<SqliteConnection>::new(db_url)).unwrap());
+        data.insert::<DbConn>(Pool::builder().build(ConnectionManager::<PgConnection>::new(db_url)).unwrap());
     }
 
 if let Err(why) = client.start().await {

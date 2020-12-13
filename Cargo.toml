@@ -10,5 +10,5 @@ edition = "2018"
 serenity = { version = "0.9.2", default-features = false, features = ["client", "gateway", "rustls_backend", "model"] }
 tokio = { version = "0.2.24", features = ["macros"] }
 dotenv = "0.15.0"
-diesel = { version = "1.4.4", features = ["sqlite", "r2d2"] }
+diesel = { version = "1.4.4", features = ["postgres", "r2d2"] }
 tokio-diesel = "0.3.0"
