@@ -328,42 +328,42 @@ impl EventHandler for Handler {
                 .execute_async(db)
                 .await
                 .expect("Error updating the database");
+        }
     }
-}
 
-async fn ready(&self, ctx: Context, ready: Ready) {
-    println!("{} is connected!", ready.user.name);
-    ctx.set_activity(Activity::competing("the CMO | Do ~help")).await;
-}
+    async fn ready(&self, ctx: Context, ready: Ready) {
+        println!("{} is connected!", ready.user.name);
+        ctx.set_activity(Activity::competing("the CMO | Do ~help")).await;
+    }
 }
 
 
 struct DbConn;
 
 impl TypeMapKey for DbConn {
-type Value = Pool<ConnectionManager<PgConnection>>;
+    type Value = Pool<ConnectionManager<PgConnection>>;
 }
 
 #[tokio::main]
 async fn main() {
-dotenv::dotenv().ok();
+    dotenv::dotenv().ok();
 
-let token = env::var("DISCORD_TOKEN")
-    .expect("Expected a token in the environment");
+    let token = env::var("DISCORD_TOKEN")
+        .expect("Expected a token in the environment");
 
-let db_url = env::var("DATABASE_URL")
-    .expect("Expected DATABASE_URL to be populated");
+    let db_url = env::var("DATABASE_URL")
+        .expect("Expected DATABASE_URL to be populated");
 
-let mut client = Client::builder(&token)
-    .event_handler(Handler)
-    .await
-    .expect("Err creating client");
-    {
-        let mut data = client.data.write().await;
-        data.insert::<DbConn>(Pool::builder().build(ConnectionManager::<PgConnection>::new(db_url)).unwrap());
-    }
+    let mut client = Client::builder(&token)
+        .event_handler(Handler)
+        .await
+        .expect("Err creating client");
+        {
+            let mut data = client.data.write().await;
+            data.insert::<DbConn>(Pool::builder().build(ConnectionManager::<PgConnection>::new(db_url)).unwrap());
+        }
 
-    if let Err(why) = client.start().await {
-        println!("Client error: {:?}", why);
-    }
+        if let Err(why) = client.start().await {
+            println!("Client error: {:?}", why);
+        }
 }
