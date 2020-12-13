@@ -12,6 +12,7 @@ use diesel::pg::PgConnection;
 use diesel::r2d2::{ConnectionManager, Pool};
 use tokio_diesel::*;
 use crate::structs::servers::{Servers, GlobalStats};
+use serenity::model::gateway::Activity;
 
 pub mod structs;
 pub mod schema;
@@ -304,7 +305,7 @@ impl EventHandler for Handler {
 
 async fn ready(&self, ctx: Context, ready: Ready) {
     println!("{} is connected!", ready.user.name);
-    ctx.set_activity(Activity::listening("for numbers | Do ~help")).await;
+    ctx.set_activity(Activity::competing("the CMO | Do ~help")).await;
 }
 }
 

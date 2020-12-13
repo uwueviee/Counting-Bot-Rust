@@ -30,7 +30,7 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4a4fe546-07cc-42a7-bdda-363d13eec2fa" name="Default Changelist" comment="Fix gamemode 0 reacting to wrong submissions">
+    <list default="true" id="4a4fe546-07cc-42a7-bdda-363d13eec2fa" name="Default Changelist" comment="React with red X or warning sign instead of nothing.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.rs" afterDir="false" />
     </list>
@@ -108,7 +108,7 @@
       <option name="presentableId" value="Default" />
       <updated>1607846743637</updated>
       <workItem from="1607846746251" duration="1283000" />
-      <workItem from="1607878946878" duration="12116000" />
+      <workItem from="1607878946878" duration="12413000" />
     </task>
     <task id="LOCAL-00001" summary="Optimize database writes and improve if statements">
       <created>1607887133866</created>
@@ -138,7 +138,14 @@
       <option name="project" value="LOCAL" />
       <updated>1607893802008</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="React with red X or warning sign instead of nothing.">
+      <created>1607895477187</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1607895477187</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -160,7 +167,8 @@
     <MESSAGE value="Switch to PostgreSQL" />
     <MESSAGE value="Add help, stats, and global stats commands" />
     <MESSAGE value="Fix gamemode 0 reacting to wrong submissions" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix gamemode 0 reacting to wrong submissions" />
+    <MESSAGE value="React with red X or warning sign instead of nothing." />
+    <option name="LAST_COMMIT_MESSAGE" value="React with red X or warning sign instead of nothing." />
   </component>
   <component name="WindowStateProjectService">
     <state x="288" y="405" width="1334" height="303" key="#SQL_Dialects" timestamp="1607887361564">
@@ -179,45 +187,45 @@
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="738" y="315" width="424" height="491" key="FileChooserDialogImpl/0.27.1920.1053/1920.0.1920.1080@0.27.1920.1053" timestamp="1607846784290" />
-    <state width="1874" height="128" key="GridCell.Tab.0.bottom" timestamp="1607894943015">
+    <state width="1874" height="128" key="GridCell.Tab.0.bottom" timestamp="1607895726892">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1874" height="128" key="GridCell.Tab.0.bottom/0.27.1920.1053/1920.0.1920.1080@0.27.1920.1053" timestamp="1607894943015" />
-    <state width="1874" height="128" key="GridCell.Tab.0.center" timestamp="1607894943015">
+    <state width="1874" height="128" key="GridCell.Tab.0.bottom/0.27.1920.1053/1920.0.1920.1080@0.27.1920.1053" timestamp="1607895726892" />
+    <state width="1874" height="128" key="GridCell.Tab.0.center" timestamp="1607895726892">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1874" height="128" key="GridCell.Tab.0.center/0.27.1920.1053/1920.0.1920.1080@0.27.1920.1053" timestamp="1607894943015" />
-    <state width="1874" height="128" key="GridCell.Tab.0.left" timestamp="1607894943015">
+    <state width="1874" height="128" key="GridCell.Tab.0.center/0.27.1920.1053/1920.0.1920.1080@0.27.1920.1053" timestamp="1607895726892" />
+    <state width="1874" height="128" key="GridCell.Tab.0.left" timestamp="1607895726892">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1874" height="128" key="GridCell.Tab.0.left/0.27.1920.1053/1920.0.1920.1080@0.27.1920.1053" timestamp="1607894943015" />
-    <state width="1874" height="128" key="GridCell.Tab.0.right" timestamp="1607894943015">
+    <state width="1874" height="128" key="GridCell.Tab.0.left/0.27.1920.1053/1920.0.1920.1080@0.27.1920.1053" timestamp="1607895726892" />
+    <state width="1874" height="128" key="GridCell.Tab.0.right" timestamp="1607895726892">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1874" height="128" key="GridCell.Tab.0.right/0.27.1920.1053/1920.0.1920.1080@0.27.1920.1053" timestamp="1607894943015" />
-    <state width="1874" height="128" key="GridCell.Tab.1.bottom" timestamp="1607894943016">
+    <state width="1874" height="128" key="GridCell.Tab.0.right/0.27.1920.1053/1920.0.1920.1080@0.27.1920.1053" timestamp="1607895726892" />
+    <state width="1874" height="128" key="GridCell.Tab.1.bottom" timestamp="1607895726892">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1874" height="128" key="GridCell.Tab.1.bottom/0.27.1920.1053/1920.0.1920.1080@0.27.1920.1053" timestamp="1607894943016" />
-    <state width="1874" height="128" key="GridCell.Tab.1.center" timestamp="1607894943016">
+    <state width="1874" height="128" key="GridCell.Tab.1.bottom/0.27.1920.1053/1920.0.1920.1080@0.27.1920.1053" timestamp="1607895726892" />
+    <state width="1874" height="128" key="GridCell.Tab.1.center" timestamp="1607895726892">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1874" height="128" key="GridCell.Tab.1.center/0.27.1920.1053/1920.0.1920.1080@0.27.1920.1053" timestamp="1607894943016" />
-    <state width="1874" height="128" key="GridCell.Tab.1.left" timestamp="1607894943016">
+    <state width="1874" height="128" key="GridCell.Tab.1.center/0.27.1920.1053/1920.0.1920.1080@0.27.1920.1053" timestamp="1607895726892" />
+    <state width="1874" height="128" key="GridCell.Tab.1.left" timestamp="1607895726892">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1874" height="128" key="GridCell.Tab.1.left/0.27.1920.1053/1920.0.1920.1080@0.27.1920.1053" timestamp="1607894943016" />
-    <state width="1874" height="128" key="GridCell.Tab.1.right" timestamp="1607894943016">
+    <state width="1874" height="128" key="GridCell.Tab.1.left/0.27.1920.1053/1920.0.1920.1080@0.27.1920.1053" timestamp="1607895726892" />
+    <state width="1874" height="128" key="GridCell.Tab.1.right" timestamp="1607895726892">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1874" height="128" key="GridCell.Tab.1.right/0.27.1920.1053/1920.0.1920.1080@0.27.1920.1053" timestamp="1607894943016" />
+    <state width="1874" height="128" key="GridCell.Tab.1.right/0.27.1920.1053/1920.0.1920.1080@0.27.1920.1053" timestamp="1607895726892" />
     <state x="673" y="149" width="1022" height="737" key="SettingsEditor" timestamp="1607879495978">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="673" y="149" width="1022" height="737" key="SettingsEditor/0.27.1920.1053/1920.0.1920.1080@0.27.1920.1053" timestamp="1607879495978" />
-    <state x="554" y="288" width="802" height="537" key="Vcs.Push.Dialog.v2" timestamp="1607893808102">
+    <state x="554" y="288" width="802" height="537" key="Vcs.Push.Dialog.v2" timestamp="1607895507640">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state x="554" y="288" width="802" height="537" key="Vcs.Push.Dialog.v2/0.27.1920.1053/1920.0.1920.1080@0.27.1920.1053" timestamp="1607893808102" />
+    <state x="554" y="288" width="802" height="537" key="Vcs.Push.Dialog.v2/0.27.1920.1053/1920.0.1920.1080@0.27.1920.1053" timestamp="1607895507640" />
   </component>
 </project>
