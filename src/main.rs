@@ -179,9 +179,20 @@ impl EventHandler for Handler {
                 println!("Error sending message: {:?}", why);
             }
         } else if msg_arguments[0] == "~set_channel" {
+            // Check to see if the message author has the "Manage Channels" permission
+            if &ctx.cache.member(msg.guild_id.unwrap(), msg.author.id).await.unwrap().permissions(&ctx.cache).await
+                .expect("permissions").bits & 0x00000010 != 0x00000010 {
+                return;
+            }
+
+            let mut new_channel = org_channel_id.clone();
+            if msg_arguments.len() > 1 {
+                new_channel = msg_arguments[1].to_string();
+            }
+
             diesel::insert_into(crate::schema::servers::table)
                 .values((
-                    channel_id.eq(org_channel_id),
+                    channel_id.eq(new_channel),
                     guild_id.eq(org_guild_id)
                 ))
                 .execute_async(db)
@@ -191,7 +202,13 @@ impl EventHandler for Handler {
             if let Err(why) = msg.channel_id.say(&ctx.http, "Setting current channel as counting channel!").await {
                 println!("Error sending message: {:?}", why);
             }
-        } else if msg_arguments[0] == "~set_gamemode" { 
+        } else if msg_arguments[0] == "~set_gamemode" {
+            // Check to see if the message author has the "Manage Channels" permission
+            if &ctx.cache.member(msg.guild_id.unwrap(), msg.author.id).await.unwrap().permissions(&ctx.cache).await
+                .expect("permissions").bits & 0x00000010 != 0x00000010 {
+                return;
+            }
+
             if msg_arguments.len() == 1 || msg_arguments[1].parse::<i32>().unwrap() > 2 {
                 if let Err(why) = msg.channel_id.say(&ctx.http, "Please enter a valid gamemode id using `~set_gamemode <gamemode id>`").await {
                     println!("Error sending message: {:?}", why);
