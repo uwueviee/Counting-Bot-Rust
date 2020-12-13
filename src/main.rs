@@ -248,12 +248,14 @@ impl EventHandler for Handler {
 
             let mut same_auth_in_two = false;
             if guild_info.gamemode == 2 {
-                guild_info.last_submission_user = msg.author.id.0.to_string();
-
                 if msg.author.id.0.to_string() == guild_info.last_submission_user {
                     same_auth_in_two = true;
                 }
+
+                guild_info.last_submission_user = msg.author.id.0.to_string();
             }
+
+            let mut failure_emoji = serenity::model::channel::ReactionType::Unicode("⚠️".to_string());
 
             if submission != guild_info.current_count + 1 || same_auth_in_two {
                 if guild_info.gamemode != 0 {
@@ -265,6 +267,8 @@ impl EventHandler for Handler {
                     guild_info.last_failed_user = msg.author.id.0.to_string();
                     guild_info.current_count = 0;
                     guild_info.last_submission_user = "".to_string();
+
+                    failure_emoji = serenity::model::channel::ReactionType::Unicode("❌".to_string());
                 }
                 submission_passed = false;
             } else {
@@ -273,6 +277,10 @@ impl EventHandler for Handler {
 
             if submission_passed {
                 if let Err(why) = msg.react(&ctx.http, serenity::model::channel::ReactionType::Unicode("✅".to_string())).await {
+                    println!("Error reacting to message: {:?}", why);
+                }
+            } else {
+                if let Err(why) = msg.react(&ctx.http, failure_emoji).await {
                     println!("Error reacting to message: {:?}", why);
                 }
             }
@@ -294,8 +302,9 @@ impl EventHandler for Handler {
     }
 }
 
-async fn ready(&self, _: Context, ready: Ready) {
+async fn ready(&self, ctx: Context, ready: Ready) {
     println!("{} is connected!", ready.user.name);
+    ctx.set_activity(Activity::listening("for numbers | Do ~help")).await;
 }
 }
 
@@ -325,7 +334,7 @@ let mut client = Client::builder(&token)
         data.insert::<DbConn>(Pool::builder().build(ConnectionManager::<PgConnection>::new(db_url)).unwrap());
     }
 
-if let Err(why) = client.start().await {
-    println!("Client error: {:?}", why);
-}
+    if let Err(why) = client.start().await {
+        println!("Client error: {:?}", why);
+    }
 }
