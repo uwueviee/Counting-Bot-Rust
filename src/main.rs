@@ -180,8 +180,7 @@ impl EventHandler for Handler {
             }
         } else if msg_arguments[0] == "~set_channel" {
             // Check to see if the message author has the "Manage Channels" permission
-            if &ctx.cache.member(msg.guild_id.unwrap(), msg.author.id).await.unwrap().permissions(&ctx.cache).await
-                .expect("permissions").bits & 0x00000010 != 0x00000010 {
+            if msg.guild(&ctx.cache).await.unwrap().member_permissions(msg.author.id).bits & 0x00000010 != 0x00000010 {
                 return;
             }
 
@@ -192,20 +191,19 @@ impl EventHandler for Handler {
 
             diesel::insert_into(crate::schema::servers::table)
                 .values((
-                    channel_id.eq(new_channel),
+                    channel_id.eq(new_channel.clone()),
                     guild_id.eq(org_guild_id)
                 ))
                 .execute_async(db)
                 .await
                 .unwrap();
 
-            if let Err(why) = msg.channel_id.say(&ctx.http, "Setting current channel as counting channel!").await {
+            if let Err(why) = msg.channel_id.say(&ctx.http, format!("Setting <#{}> as counting channel!", new_channel)).await {
                 println!("Error sending message: {:?}", why);
             }
         } else if msg_arguments[0] == "~set_gamemode" {
             // Check to see if the message author has the "Manage Channels" permission
-            if &ctx.cache.member(msg.guild_id.unwrap(), msg.author.id).await.unwrap().permissions(&ctx.cache).await
-                .expect("permissions").bits & 0x00000010 != 0x00000010 {
+            if msg.guild(&ctx.cache).await.unwrap().member_permissions(msg.author.id).bits & 0x00000010 != 0x00000010 {
                 return;
             }
 
