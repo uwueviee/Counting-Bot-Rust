@@ -194,6 +194,9 @@ impl EventHandler for Handler {
                     channel_id.eq(new_channel.clone()),
                     guild_id.eq(org_guild_id)
                 ))
+                .on_conflict(guild_id)
+                .do_update()
+                .set(channel_id.eq(new_channel.clone()))
                 .execute_async(db)
                 .await
                 .unwrap();
