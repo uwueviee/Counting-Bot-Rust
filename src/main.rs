@@ -13,6 +13,7 @@ use diesel::r2d2::{ConnectionManager, Pool};
 use tokio_diesel::*;
 use crate::structs::servers::{Servers, GlobalStats};
 use serenity::model::gateway::Activity;
+use serenity::model::id::GuildId;
 
 pub mod structs;
 pub mod schema;
@@ -64,6 +65,7 @@ impl EventHandler for Handler {
             if msg_arguments.len() > 1 {
                 server_lookup = msg_arguments[1].to_string();
             }
+
             let results = servers.filter(guild_id.eq(server_lookup.clone()))
                 .load_async::<Servers>(db)
                 .await
@@ -97,6 +99,11 @@ impl EventHandler for Handler {
                 return;
             }
 
+            let u64_guild_id = GuildId(guild_info.guild_id.parse::<u64>().expect("Error converting into ID"));
+            let guild_name = &ctx.cache.guild_field(u64_guild_id, |guild| guild.name.clone())
+                .await
+                .expect("Guild not in cache!");
+
             let mut fields = vec![
                 ("Current Count", guild_info.current_count.to_string(), true),
                 ("Highest Count", guild_info.highest_count.to_string(), true),
@@ -114,7 +121,7 @@ impl EventHandler for Handler {
             if let Err(why) = msg.channel_id.send_message(&ctx.http, |c| {
                 c.embed(|e| {
                     e.title("Server Stats");
-                    e.description(format!("Statistics for {}", guild_info.guild_id));
+                    e.description(format!("Statistics for `{}`", guild_name));
                     e.color(12522619);
                     e.thumbnail("https://cdn.discordapp.com/avatars/786911411792117770/c74bd0d6860e287e2aade5753eeeeafd.png?size=512");
                     e.fields(fields);
@@ -272,10 +279,6 @@ impl EventHandler for Handler {
                 return;
             }
 
-            if submission > guild_info.highest_count {
-                guild_info.highest_count = submission.clone();
-            }
-
             let mut same_auth_in_two = false;
             if guild_info.gamemode == 2 {
                 if msg.author.id.0.to_string() == guild_info.last_submission_user {
@@ -303,6 +306,10 @@ impl EventHandler for Handler {
                 submission_passed = false;
             } else {
                 guild_info.current_count = submission.clone();
+
+                if submission > guild_info.highest_count {
+                    guild_info.highest_count = submission.clone();
+                }
             }
 
             if submission_passed {
