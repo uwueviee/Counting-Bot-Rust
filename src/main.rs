@@ -6,6 +6,7 @@ use serenity::{
     prelude::*,
 };
 
+extern crate openssl;
 #[macro_use] extern crate diesel;
 use diesel::prelude::*;
 use diesel::pg::PgConnection;
@@ -14,6 +15,7 @@ use tokio_diesel::*;
 use crate::structs::servers::{Servers, GlobalStats};
 use serenity::model::gateway::Activity;
 use serenity::model::id::GuildId;
+use std::any::Any;
 
 pub mod structs;
 pub mod schema;
@@ -23,14 +25,14 @@ struct Handler;
 #[async_trait]
 impl EventHandler for Handler {
     async fn message(&self, ctx: Context, msg: Message) {
-        if msg.author.bot {
-            return;
-        }
-
         use crate::schema::servers::dsl::*;
 
         let data = &ctx.data.write().await;
         let db = data.get::<DbConn>().unwrap();
+
+        if msg.author.bot || data.get::<BannedUsers>().unwrap().contains(&msg.author.id.0) {
+            return;
+        }
 
         let msg_arguments: Vec<&str> = msg.content.split(" ").collect();
 
@@ -345,6 +347,12 @@ impl EventHandler for Handler {
     }
 }
 
+// Banned user handling
+struct BannedUsers;
+
+impl TypeMapKey for BannedUsers {
+    type Value = Vec<u64>;
+}
 
 struct DbConn;
 
@@ -362,6 +370,9 @@ async fn main() {
     let db_url = env::var("DATABASE_URL")
         .expect("Expected DATABASE_URL to be populated");
 
+    // Hardcoded banned users
+    let banned_users: Vec<u64> = vec![211230498398273537, 238805922997075971];
+
     let mut client = Client::builder(&token)
         .event_handler(Handler)
         .await
@@ -369,6 +380,7 @@ async fn main() {
         {
             let mut data = client.data.write().await;
             data.insert::<DbConn>(Pool::builder().build(ConnectionManager::<PgConnection>::new(db_url)).unwrap());
+            data.insert::<BannedUsers>(banned_users.clone());
         }
 
         if let Err(why) = client.start().await {
